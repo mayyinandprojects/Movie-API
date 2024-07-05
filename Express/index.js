@@ -41,6 +41,7 @@ app.get('/', (req, res) => {
 app.get('/secreturl', (req, res) => {
   let responseText = 'This is a secret url with super top-secret content.';
   responseText += '<small>Requested at: ' + req.requestTime + '</small>';
+  //throw new Error('error: this is too secret for you');
   res.send(responseText);
 
 });

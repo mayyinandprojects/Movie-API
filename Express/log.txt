@@ -11,3 +11,6 @@
 ::ffff:127.0.0.1 - - [04/Jul/2024:13:27:30 +0000] "GET /secreturl HTTP/1.1" 200 89 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 ::ffff:127.0.0.1 - - [04/Jul/2024:13:27:39 +0000] "GET /secreturl2 HTTP/1.1" 404 149 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 ::ffff:127.0.0.1 - - [04/Jul/2024:13:30:15 +0000] "GET /documentation.html HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+::ffff:127.0.0.1 - - [04/Jul/2024:13:36:16 +0000] "GET /secreturl HTTP/1.1" 500 1563 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+::ffff:127.0.0.1 - - [04/Jul/2024:13:37:17 +0000] "GET /secreturl HTTP/1.1" 200 89 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+::ffff:127.0.0.1 - - [04/Jul/2024:13:38:00 +0000] "GET /secreturl HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
