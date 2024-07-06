@@ -2,8 +2,11 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   uuid = require('uuid');
 
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const app = express();
 
+app.use(express.json());
 app.use(bodyParser.json());
 
 let users = [
@@ -74,49 +77,133 @@ let movies = [
   }
 ];
 
-// READ
+require('./swagger')(app);
+
+/**
+ * @swagger
+ * /movies:
+ *   get:
+ *     summary: Retrieve a list of movies
+ *     responses:
+ *       200:
+ *         description: A list of movies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ */
 app.get('/movies', (req, res) => {
   res.status(200).json(movies);
 });
 
-
-// READ
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Retrieve a list of users
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ */
 app.get('/users', (req, res) => {
   res.status(200).json(users);
 });
 
-// READ
-// Gets the data about a movie, by title
+/**
+ * @swagger
+ * /movies/{title}:
+ *   get:
+ *     summary: Retrieve a movie by title
+ *     parameters:
+ *       - in: path
+ *         name: title
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The movie title
+ *     responses:
+ *       200:
+ *         description: A movie object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: No such movie
+ */
 app.get('/movies/:title', (req, res) => {
-  //using object desctructuring, create new variable title that is same title on the other side, alternative: const title = req.params.title;
   const { title } = req.params; 
-  const movie = movies.find( movie => movie.title === title);
+  const movie = movies.find(movie => movie.title === title);
 
   if (movie){
     res.status(200).json(movie);
-  } else{
-    res.status(400).send('no such movie')
+  } else {
+    res.status(400).send('no such movie');
   }
-
 });
 
-
-// READ
-// Gets the data about movies of a specific genre
+/**
+ * @swagger
+ * /movies/genre/{genreName}:
+ *   get:
+ *     summary: Retrieve movies by genre
+ *     parameters:
+ *       - in: path
+ *         name: genreName
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The genre name
+ *     responses:
+ *       200:
+ *         description: A genre object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: No such genre
+ */
 app.get('/movies/genre/:genreName', (req, res) => {
   const { genreName } = req.params; 
   const genre = movies.find(movie => movie.genre.name.toLowerCase() === genreName.toLowerCase()).genre;
   if (genre){
     res.status(200).json(genre);
-  } else{
-    res.status(400).send('no such genre')
+  } else {
+    res.status(400).send('no such genre');
   }
-
-
 });
 
-// READ
-// Gets the data about a specific director
+/**
+ * @swagger
+ * /movies/director/{directorName}:
+ *   get:
+ *     summary: Retrieve movies by director
+ *     parameters:
+ *       - in: path
+ *         name: directorName
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The director name
+ *     responses:
+ *       200:
+ *         description: A director object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: No such director
+ */
 app.get('/movies/director/:directorName', (req, res) => {
   const { directorName } = req.params; 
   const movie = movies.find(movie => movie.director.name.toLowerCase() === directorName.toLowerCase());
@@ -129,84 +216,222 @@ app.get('/movies/director/:directorName', (req, res) => {
   }
 });
 
-//CREATE
-//add new user
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     summary: Add a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: The created user object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: Users need names
+ */
 app.post('/users', (req, res) => {
   const newUser = req.body;
 
   if (newUser.name){
     newUser.id = uuid.v4();
     users.push(newUser);
-    res.status(201).json(newUser)
+    res.status(201).json(newUser);
   } else {
-    res.status(400).send('users need names')
+    res.status(400).send('users need names');
   }
-}); 
+});
 
-//UPDATE 
-//update user info
+/**
+ * @swagger
+ * /users/{id}:
+ *   put:
+ *     summary: Update user info
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: The updated user object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: No such user
+ */
 app.put('/users/:id', (req, res) => {
   const {id} = req.params;
   const updatedUser = req.body;
 
-  let user = users.find( user => user.id == id);
+  let user = users.find(user => user.id == id);
 
   if (user){
     user.name = updatedUser.name;
-    res.status(200).json(user)
+    res.status(200).json(user);
   } else {
-    res.status(400).send('no such user')
+    res.status(400).send('no such user');
   }
 });
 
-//CREATE 
-//add favourite movie based on user ID
+/**
+ * @swagger
+ * /users/{id}/{movietitle}:
+ *   post:
+ *     summary: Add favourite movie for user
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *       - in: path
+ *         name: movietitle
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The movie title
+ *     responses:
+ *       200:
+ *         description: Movie added to user's favourites
+ *       400:
+ *         description: No such user
+ */
 app.post('/users/:id/:movietitle', (req, res) => {
   const { id, movietitle } = req.params;
 
-  let user = users.find( user => user.id == id);
+  let user = users.find(user => user.id == id);
 
   if (user){
     user.favouriteMovies.push(movietitle);
-    res.status(200).send('$(movietitle) has been added to user $(id)\'s array'); 
+    res.status(200).send(`${movietitle} has been added to user ${id}'s array`); 
   } else {
-    res.status(400).send('no such user')
+    res.status(400).send('no such user');
   }
 });
 
-//DELETE 
-//remove favourite movie based on user ID
+/**
+ * @swagger
+ * /users/{id}/{movietitle}:
+ *   delete:
+ *     summary: Remove favourite movie for user
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *       - in: path
+ *         name: movietitle
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The movie title
+ *     responses:
+ *       200:
+ *         description: Movie removed from user's favourites
+ *       400:
+ *         description: No such user
+ */
 app.delete('/users/:id/:movietitle', (req, res) => {
   const { id, movietitle } = req.params;
 
-  let user = users.find( user => user.id == id);
+  let user = users.find(user => user.id == id);
 
   if (user){
-    user.favouriteMovies = user.favouriteMovies.filter( title => title !== movietitle);
-    res.status(200).send('$(movietitle) has been removed from user $(id)\'s array'); 
+    user.favouriteMovies = user.favouriteMovies.filter(title => title !== movietitle);
+    res.status(200).send(`${movietitle} has been removed from user ${id}'s array`); 
   } else {
-    res.status(400).send('no such user')
+    res.status(400).send('no such user');
   }
 });
 
-//DELETE 
-//delete user
+/**
+ * @swagger
+ * /users/{id}:
+ *   delete:
+ *     summary: Delete a user
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: The updated list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       400:
+ *         description: No such user
+ */
 app.delete('/users/:id', (req, res) => {
-  const { id, movietitle } = req.params;
+  const { id } = req.params;
 
-  let user = users.find( user => user.id == id);
+  let user = users.find(user => user.id == id);
 
   if (user) {
-    users = users.filter( user => user.id != id);
-    res.json(users)
-    //res.status(200).send('user $(id) has been deleted'); 
+    users = users.filter(user => user.id != id);
+    res.json(users);
   } else {
-    res.status(400).send('no such user')
+    res.status(400).send('no such user');
   }
 });
 
-// CREATE 
-// add data for a new movie to our list of movies.
+/**
+ * @swagger
+ * /movies:
+ *   post:
+ *     summary: Add a new movie
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: The created movie object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: Missing title in request body
+ */
 app.post('/movies', (req, res) => {
   let newMovie = req.body;
 
@@ -219,6 +444,7 @@ app.post('/movies', (req, res) => {
     res.status(201).send(newMovie);
   }
 });
+
 
 
 

@@ -1,11 +1,11 @@
 {
   "name": "movie-api",
   "version": "1.0.0",
-  "main": "test.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node test.js",
-    "dev": "nodemon test.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",

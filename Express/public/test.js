@@ -6,9 +6,6 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
 
-const path = require('path');
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -80,7 +77,7 @@ let movies = [
   }
 ];
 
-require('./swagger')(app);
+require('../swagger')(app);
 
 /**
  * @swagger
