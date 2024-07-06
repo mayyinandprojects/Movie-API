@@ -9,6 +9,9 @@ const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 
+// Enable CORS for all routes
+app.use(cors());
+
 let users = [
   { id: 1,
     name: "Max Musterman",

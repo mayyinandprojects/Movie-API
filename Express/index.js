@@ -4,6 +4,8 @@ const express = require('express'),
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const cors = require('cors'); 
+
 const app = express();
 
 const path = require('path');
@@ -11,6 +13,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
 app.use(bodyParser.json());
+
+// Enable CORS for all routes
+app.use(cors());
 
 let users = [
   { id: 1,
@@ -176,12 +181,13 @@ app.get('/movies/:title', (req, res) => {
  *         description: No such genre
  */
 app.get('/movies/genre/:genreName', (req, res) => {
-  const { genreName } = req.params; 
-  const genre = movies.find(movie => movie.genre.name.toLowerCase() === genreName.toLowerCase()).genre;
-  if (genre){
-    res.status(200).json(genre);
+  const { genreName } = req.params;
+  const movie = movies.find(movie => movie.genre.name.toLowerCase() === genreName.toLowerCase());
+
+  if (movie) {
+    res.status(200).json(movie.genre);
   } else {
-    res.status(400).send('no such genre');
+    res.status(404).send('No such genre');
   }
 });
 
@@ -290,13 +296,14 @@ app.put('/users/:id', (req, res) => {
   const {id} = req.params;
   const updatedUser = req.body;
 
-  let user = users.find(user => user.id == id);
+  let user = users.find(user => user.id === parseInt(id, 10));
 
-  if (user){
+  if (user) {
     user.name = updatedUser.name;
+    user.favouriteMovies = updatedUser.favouriteMovies; // Update other properties as needed
     res.status(200).json(user);
   } else {
-    res.status(400).send('no such user');
+    res.status(404).send('No such user');
   }
 });
 
