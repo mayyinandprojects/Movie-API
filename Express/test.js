@@ -143,7 +143,8 @@ app.post('/users', (req, res) => {
   }
 }); 
 
-//UPDATE user info
+//UPDATE 
+//update user info
 app.put('/users/:id', (req, res) => {
   const {id} = req.params;
   const updatedUser = req.body;
@@ -158,7 +159,8 @@ app.put('/users/:id', (req, res) => {
   }
 });
 
-//CREATE add favourite movie to user ID
+//CREATE 
+//add favourite movie based on user ID
 app.post('/users/:id/:movietitle', (req, res) => {
   const { id, movietitle } = req.params;
 
@@ -172,7 +174,8 @@ app.post('/users/:id/:movietitle', (req, res) => {
   }
 });
 
-//DELETE remove favourite movie to user ID
+//DELETE 
+//remove favourite movie based on user ID
 app.delete('/users/:id/:movietitle', (req, res) => {
   const { id, movietitle } = req.params;
 
@@ -186,7 +189,8 @@ app.delete('/users/:id/:movietitle', (req, res) => {
   }
 });
 
-//DELETE delete user
+//DELETE 
+//delete user
 app.delete('/users/:id', (req, res) => {
   const { id, movietitle } = req.params;
 
@@ -201,7 +205,8 @@ app.delete('/users/:id', (req, res) => {
   }
 });
 
-// Adds data for a new movie to our list of movies.
+// CREATE 
+// add data for a new movie to our list of movies.
 app.post('/movies', (req, res) => {
   let newMovie = req.body;
 
@@ -212,16 +217,6 @@ app.post('/movies', (req, res) => {
     newMovie.id = uuid.v4();
     movies.push(newMovie);
     res.status(201).send(newMovie);
-  }
-});
-
-// Deletes a movie from our list by ID
-app.delete('/movies/:id', (req, res) => {
-  let movie = movies.find((movie) => { return movie.id === req.params.id });
-
-  if (movie) {
-    movies = movies.filter((obj) => { return obj.id !== req.params.id });
-    res.status(201).send('Movie' + req.params.id + ' was deleted.');
   }
 });
 
