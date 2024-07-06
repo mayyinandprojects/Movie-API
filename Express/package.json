@@ -1,11 +1,11 @@
 {
   "name": "movie-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "test.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon server.js"
+    "start": "node test.js",
+    "dev": "nodemon test.js"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +17,9 @@
     "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "morgan": "^1.10.0",
-    "nodemon": "^3.1.4",
     "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }
