@@ -22,12 +22,23 @@ const path = require('path');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 // Enable CORS for all routes
 app.use(cors());
 
 require('./swagger')(app);
+
+
+
+let auth = require('./auth')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
+
+//add these after let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
+
 
 /**
  * @swagger
@@ -57,7 +68,7 @@ app.get("/", (req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/Movie'
  */
-app.get("/movies", (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
@@ -67,6 +78,7 @@ app.get("/movies", (req, res) => {
       res.status(500).send("Error: " + err);
     });
 });
+//the GET request now has three parameters: the URL, the passport.authenticate('jwt', {session: false}) function, and the callback function. Now, any request to the “movies” endpoint will require a JWT from the client. The JWT will be decoded and checked by the JWT authentication strategy created earlier using Passport, which will authenticate the request.
 
 /**
  * @swagger
@@ -83,7 +95,7 @@ app.get("/movies", (req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-app.get('/users', async (req, res) => {
+app.get('/users', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.find()
     .then((users) => {
       res.status(201).json(users);
@@ -114,7 +126,7 @@ app.get('/users', async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Movie'
  */
-app.get('/movies/:title', (req, res) => {
+app.get('/movies/:title', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ title: req.params.title })
     .then((movie) => {
       res.json(movie);
@@ -145,7 +157,7 @@ app.get('/movies/:title', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Genre'
  */
-app.get('/movies/genre/:name', (req, res) => {
+app.get('/movies/genre/:name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ 'genre.name': req.params.name })
     .then((genre) => {
       res.json(genre);
@@ -176,7 +188,7 @@ app.get('/movies/genre/:name', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Director'
  */
-app.get('/director/:name', (req, res) => {
+app.get('/director/:name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ 'directors.name': req.params.name })
     .then((director) => {
       res.json(director);
@@ -222,7 +234,6 @@ app.post('/users', async (req, res) => {
       password: req.body.password,
       email: req.body.email,
       birthday: req.body.birthday,
-      favorite_movies: req.body.favorite_movies
     });
 
     res.status(201).json(newUser);
@@ -260,15 +271,14 @@ app.post('/users', async (req, res) => {
  *       500:
  *         description: Error updating user
  */
-app.put('/users/:username', async (req, res) => {
+app.put('/users/:username', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOneAndUpdate({ username: req.params.username }, {
     $set: {
       name: req.body.name,
       username: req.body.username,
       password: req.body.password,
       email: req.body.email,
-      birthday: req.body.birthday,
-      favorite_movies: req.body.favorite_movies
+      birthday: req.body.birthday
     }
   },
     { new: true }) // This line makes sure that the updated document is returned
@@ -299,7 +309,7 @@ app.put('/users/:username', async (req, res) => {
  *       400:
  *         description: User was not found
  */
-app.delete('/users/:username', async (req, res) => {
+app.delete('/users/:username', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOneAndDelete({ username: req.params.username })
     .then((user) => {
       if (!user) {
@@ -342,7 +352,7 @@ app.delete('/users/:username', async (req, res) => {
  *       500:
  *         description: Error adding movie to favorites
  */
-app.post('/users/:username/movies/:MovieID', async (req, res) => {
+app.post('/users/:username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOneAndUpdate({ username: req.params.username }, {
     $push: { favorite_movies: req.params.MovieID }
   },
@@ -384,7 +394,7 @@ app.post('/users/:username/movies/:MovieID', async (req, res) => {
  *       500:
  *         description: Error removing movie from favorites
  */
-app.delete('/users/:username/movies/:MovieID', async (req, res) => {
+app.delete('/users/:username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOneAndUpdate({ username: req.params.username }, {
     $pull: { favorite_movies: req.params.MovieID }
   },
