@@ -40,7 +40,7 @@ let movieSchema = mongoose.Schema({
   };
   
   userSchema.methods.validatePassword = function(password) {
-    return bcrypt.compareSync(password, this.Password);
+    return bcrypt.compareSync(password, this.password);
   };
 //Don't use arrow functions when defining instance methods. validatePassword is an example of an instance method, a method that can be called on each object/document created (each individual object/document). 
 
