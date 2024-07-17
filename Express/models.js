@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 //[] - array data type
 
 
+const bcrypt = require('bcrypt');
 
 
 let movieSchema = mongoose.Schema({
@@ -33,6 +34,16 @@ let movieSchema = mongoose.Schema({
     birthday: Date,
     favorite_movies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }] 
   });
+
+  userSchema.statics.hashPassword = (password) => {
+    return bcrypt.hashSync(password, 10);
+  };
+  
+  userSchema.methods.validatePassword = function(password) {
+    return bcrypt.compareSync(password, this.Password);
+  };
+//Don't use arrow functions when defining instance methods. validatePassword is an example of an instance method, a method that can be called on each object/document created (each individual object/document). 
+
       //notes-  the reference method is being used to link “Users” collection with“Movies” collection
     //alternatively can use .populate() to contain an array of actual movie documents. you can write a single query to pull information about the user along with their favorite movies compared to reference by using embedded data
   

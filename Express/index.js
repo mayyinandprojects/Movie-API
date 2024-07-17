@@ -11,6 +11,7 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
+
 mongoose.connect('mongodb://localhost:27017/cfDB')
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
@@ -19,6 +20,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
 const path = require('path');
+const bcrypt = require('bcrypt'); //to hash users’ passwords and compare hashed passwords every time users log in
+const { check, validationResult } = require('express-validator');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -26,18 +29,36 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-// Enable CORS for all routes
-app.use(cors());
+
 
 require('./swagger')(app);
-
-
 
 let auth = require('./auth')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
 
 //add these after let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
+
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+// Enable CORS for all routes
+//app.use(cors());
+
+
+//Cross-Origin Resource Sharing (CORS) for only certain routes,  creates a list of allowed domains within the variable allowedOrigins, then compares the domains of any incoming request with this list and either allows it (if the domain is on the list) or returns an error (if the domain isn’t on the list). As a general rule, you should only allow requests from domains that need your API. For this reason, it’s usually considered bad practice to use an asterisk * to grant access to all domains.
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
+
+
+
 
 
 /**
@@ -220,7 +241,28 @@ app.get('/director/:name', passport.authenticate('jwt', { session: false }), (re
  *       400:
  *         description: Username already exists
  */
-app.post('/users', async (req, res) => {
+app.post('/users',
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEmpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) which means
+  //minimum value of 5 characters are only allowed
+  [
+    check('username', 'Username is required').isLength({min: 5}),
+    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('password', 'Password is required').not().isEmpty(),
+    check('email', 'Email does not appear to be valid').isEmail()
+  ], async (req, res) => {
+
+  // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+  
+  let hashedPassword = Users.hashPassword(req.body.password);
+
   try {
     const existingUser = await Users.findOne({ username: req.body.username });
 
@@ -231,7 +273,7 @@ app.post('/users', async (req, res) => {
     const newUser = await Users.create({
       name: req.body.name,
       username: req.body.username,
-      password: req.body.password,
+      password: hashedPassword,
       email: req.body.email,
       birthday: req.body.birthday,
     });
@@ -408,10 +450,13 @@ app.delete('/users/:username/movies/:MovieID', passport.authenticate('jwt', { se
     });
 });
 
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080');
+// app.listen(8080, () => {
+//   console.log('Your app is listening on port 8080');
+// });
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
 });
-
 /**
  * @swagger
  * components:

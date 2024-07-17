@@ -25,6 +25,10 @@ passport.use(
             message: 'Incorrect username or password.',
           });
         }
+        if (!user.validatePassword(password)) {
+          console.log('incorrect password');
+          return callback(null, false, { message: 'Incorrect password.' });
+        }
         console.log('finished');
         return callback(null, user);
       })
@@ -37,6 +41,8 @@ passport.use(
     }
   )
 );
+
+// if (!user.validatePassword(password)) Hash any password entered by the user when logging in before comparing it to the password stored in MongoDB (user.validatePassword(password)) in LocalStrategy within your “passport.js” file).
 
 
 passport.use(new JWTStrategy({
