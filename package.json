@@ -2,7 +2,7 @@
   "name": "movie-api",
   "version": "1.0.0",
   "main": "index.js",
-  "engines": {
+  "engines":{
     "node": "20.x"
   },
   "scripts": {
@@ -23,7 +23,6 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "method-override": "^3.0.0",
-    "mongodb": "^6.8.0",
     "mongoose": "^8.5.0",
     "morgan": "^1.10.0",
     "passport": "^0.7.0",
@@ -36,5 +35,4 @@
   "devDependencies": {
     "nodemon": "^3.1.4"
   }
-  
 }
