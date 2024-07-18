@@ -17,7 +17,7 @@ const Users = Models.User;
 //   .catch(err => console.error('Could not connect to MongoDB', err));
 
 // mongoose.connect('mongodb://localhost:27017/cfDB')
-mongoose.connect('mongodb+srv://myFlixDbAdmin:8WASRkKExN4zFGXa@myflix.jhey1cb.mongodb.net/myflix?retryWrites=true&w=majority&appName=myflix')
+mongoose.connect('process.env.CONNECTION_URI')
    .then(() => console.log('Connected to MongoDB'))
    .catch(err => console.error('Could not connect to MongoDB', err));
 
