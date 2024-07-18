@@ -17,9 +17,14 @@ const Users = Models.User;
 //   .catch(err => console.error('Could not connect to MongoDB', err));
 
 // mongoose.connect('mongodb://localhost:27017/cfDB')
-mongoose.connect('process.env.CONNECTION_URI')
+mongoose.connect(process.env.CONNECTION_URI)
    .then(() => console.log('Connected to MongoDB'))
    .catch(err => console.error('Could not connect to MongoDB', err));
+
+
+  //  mongoose.connect('process.env.CONNECTION_URI')
+  //  .then(() => console.log('Connected to MongoDB'))
+  //  .catch(err => console.error('Could not connect to MongoDB', err));   
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
