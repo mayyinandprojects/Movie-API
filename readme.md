@@ -29,12 +29,6 @@ A movie API system providing movie and user management with features like authen
 - **Cors**: Cross-Origin Resource Sharing middleware.
 - **Bcrypt**: Password hashing.
 
-## Setup
-
-### Prerequisites
-
-- Node.js and npm.
-- MongoDB instance or URI.
 
 ## API Endpoints
 Movies
