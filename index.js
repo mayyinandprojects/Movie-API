@@ -7,7 +7,7 @@ const app = express();
 
 // mongoose related:
 const mongoose = require('mongoose');
-const Models = require('../models.js');
+const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
@@ -17,7 +17,9 @@ const Users = Models.User;
 //   .catch(err => console.error('Could not connect to MongoDB', err));
 
 // mongoose.connect('mongodb://localhost:27017/cfDB')
-mongoose.connect('mongodb+srv://myFlixDbAdmin:8WASRkKExN4zFGXa@myflix.jhey1cb.mongodb.net/?retryWrites=true&w=majority&appName=myflix');
+mongoose.connect('mongodb+srv://myFlixDbAdmin:8WASRkKExN4zFGXa@myflix.jhey1cb.mongodb.net/myflix?retryWrites=true&w=majority&appName=myflix')
+   .then(() => console.log('Connected to MongoDB'))
+   .catch(err => console.error('Could not connect to MongoDB', err));
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -34,13 +36,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-require('../swagger.js')(app);
+require('./swagger.js')(app);
 
-let auth = require('../auth.js')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
+let auth = require('./auth.js')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
 
 //add these after let auth = require('./auth')(app);
 const passport = require('passport');
-require('../passport.js');
+require('./passport.js');
 
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 
