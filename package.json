@@ -2,10 +2,13 @@
   "name": "movie-api",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "20.x"
+  }
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
   },
   "keywords": [],
   "author": "",
@@ -32,8 +35,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-  },
-  "engines": {
-    "node": "20.x"
   }
+  
 }
