@@ -7,7 +7,7 @@ const app = express();
 
 // mongoose related:
 const mongoose = require('mongoose');
-const Models = require('./models.js');
+const Models = require('../models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
@@ -34,13 +34,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-require('./swagger')(app);
+require('../swagger.js')(app);
 
-let auth = require('./auth')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
+let auth = require('../auth.js')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
 
 //add these after let auth = require('./auth')(app);
 const passport = require('passport');
-require('./passport');
+require('../passport.js');
 
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 

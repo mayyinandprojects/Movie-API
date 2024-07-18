@@ -1,16 +1,10 @@
-{   
-    "version": 2,
-    "builds": [
-        {
-            "src": "index.js",
-            "use": "@now/node"
-        }
-
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/"
+{
+    "installCommand": "npm install",
+    "buildCommand": "",
+    "rewrites": [
+        { 
+            "source": "/(.*)", 
+            "destination": "/api" 
         }
     ]
 }
