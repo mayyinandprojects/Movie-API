@@ -95,7 +95,7 @@ app.get("/", (req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/Movie'
  */
-app.get('/movies'), async (req, res) => {
+app.get('/movies', async (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
