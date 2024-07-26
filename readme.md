@@ -29,6 +29,8 @@ A movie API system providing movie and user management with features like authen
 - **Cors**: Cross-Origin Resource Sharing middleware.
 - **Bcrypt**: Password hashing.
 
+## View Live
+https://movie-api-4o5a.onrender.com/
 
 ## API Endpoints
 Movies
