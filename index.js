@@ -16,9 +16,8 @@ const Users = Models.User;
 // mongoose.connect('mongodb://localhost:27017/cfDB')
 //   .then(() => console.log('Connected to MongoDB'))
 //   .catch(err => console.error('Could not connect to MongoDB', err));
-
-// mongoose.connect(process.env.CONNECTION_URI)
-mongoose.connect('mongodb+srv://myFlixDbAdmin:8WASRkKExN4zFGXa@myflix.jhey1cb.mongodb.net/myflix?retryWrites=true&w=majority&appName=myflix') //got issues with uri, fix later
+require('dotenv').config();
+mongoose.connect(process.env.CONNECTION_URI)
    .then(() => console.log('Connected to MongoDB'))
    .catch(err => console.error('Could not connect to MongoDB', err));
 
@@ -30,15 +29,7 @@ const path = require('path');
 const bcrypt = require('bcrypt'); //to hash users’ passwords and compare hashed passwords every time users log in
 const { check, validationResult } = require('express-validator');
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
-//app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-
-
-
-require('./swagger.js')(app);
 
 let auth = require('./auth.js')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
 
@@ -46,26 +37,40 @@ let auth = require('./auth.js')(app); //import your “auth.js” file into your
 const passport = require('passport');
 require('./passport.js');
 
-let allowedOrigins = ['http://localhost:8080', 'http://movie-api-4o5a.onrender.com', 'http://movie-api-4o5a.onrender.com/login', 'http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://movie-api-4o5a.onrender.com', 'http://localhost:1234'];
 
 // Enable CORS for all routes
 // app.use(cors());
 
 
 //Cross-Origin Resource Sharing (CORS) for only certain routes,  creates a list of allowed domains within the variable allowedOrigins, then compares the domains of any incoming request with this list and either allows it (if the domain is on the list) or returns an error (if the domain isn’t on the list). As a general rule, you should only allow requests from domains that need your API. For this reason, it’s usually considered bad practice to use an asterisk * to grant access to all domains.
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if(!origin) return callback(null, true);
+//     if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+//       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+//       return callback(new Error(message), false);
+//     }
+//     return callback(null, true);
+//   }
+// }));
 app.use(cors({
   origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message), false);
+    console.log('Origin:', origin); // Add this line to debug which origin is being checked
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'), false);
     }
-    return callback(null, true);
   }
 }));
 
 
-
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+//app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+require('./swagger.js')(app);
 
 
 /**
@@ -464,6 +469,7 @@ const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
  console.log('Listening on Port ' + port);
 });
+
 /**
  * @swagger
  * components:
