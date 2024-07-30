@@ -45,7 +45,7 @@ let auth = require('./auth.js')(app); //import your “auth.js” file into your
 const passport = require('passport');
 require('./passport.js');
 
-let allowedOrigins = ['http://localhost:8080', 'http://movie-api-4o5a.onrender.com/', 'http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://movie-api-4o5a.onrender.com', 'http://movie-api-4o5a.onrender.com/login', 'http://localhost:1234'];
 
 // Enable CORS for all routes
 //app.use(cors());
