@@ -3,6 +3,7 @@ const express = require('express'),
   uuid = require('uuid');
 
 const morgan = require("morgan");
+const cors = require('cors');
 const app = express();
 
 // mongoose related:
@@ -16,7 +17,8 @@ const Users = Models.User;
 //   .then(() => console.log('Connected to MongoDB'))
 //   .catch(err => console.error('Could not connect to MongoDB', err));
 
-mongoose.connect(process.env.CONNECTION_URI)
+// mongoose.connect(process.env.CONNECTION_URI)
+mongoose.connect('mongodb+srv://myFlixDbAdmin:8WASRkKExN4zFGXa@myflix.jhey1cb.mongodb.net/myflix?retryWrites=true&w=majority&appName=myflix') //got issues with uri, fix later
    .then(() => console.log('Connected to MongoDB'))
    .catch(err => console.error('Could not connect to MongoDB', err));
 
@@ -24,7 +26,6 @@ mongoose.connect(process.env.CONNECTION_URI)
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcrypt'); //to hash users’ passwords and compare hashed passwords every time users log in
 const { check, validationResult } = require('express-validator');
@@ -48,7 +49,7 @@ require('./passport.js');
 let allowedOrigins = ['http://localhost:8080', 'http://movie-api-4o5a.onrender.com', 'http://movie-api-4o5a.onrender.com/login', 'http://localhost:1234'];
 
 // Enable CORS for all routes
-//app.use(cors());
+// app.use(cors());
 
 
 //Cross-Origin Resource Sharing (CORS) for only certain routes,  creates a list of allowed domains within the variable allowedOrigins, then compares the domains of any incoming request with this list and either allows it (if the domain is on the list) or returns an error (if the domain isn’t on the list). As a general rule, you should only allow requests from domains that need your API. For this reason, it’s usually considered bad practice to use an asterisk * to grant access to all domains.
@@ -57,7 +58,7 @@ app.use(cors({
     if(!origin) return callback(null, true);
     if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
+      return callback(new Error(message), false);
     }
     return callback(null, true);
   }
