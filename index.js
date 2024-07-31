@@ -31,11 +31,7 @@ const { check, validationResult } = require('express-validator');
 
 
 
-let auth = require('./auth.js')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
 
-//add these after let auth = require('./auth')(app);
-const passport = require('passport');
-require('./passport.js');
 
 let allowedOrigins = ['http://localhost:8080', 'http://movie-api-4o5a.onrender.com', 'http://localhost:1234'];
 
@@ -65,6 +61,11 @@ app.use(cors({
   }
 }));
 
+let auth = require('./auth.js')(app); //import your “auth.js” file into your project. To do so, add the following code to your “index.js” file. Be sure to place it AFTER your bodyParser middleware function (app.use(bodyParser.urlencoded({ extended: true }));):
+
+//add these(passport) after let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport.js');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
