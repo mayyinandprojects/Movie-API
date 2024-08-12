@@ -33,7 +33,7 @@ const { check, validationResult } = require('express-validator');
 
 
 
-let allowedOrigins = ['http://localhost:8080', 'http://movie-api-4o5a.onrender.com', 'http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://movie-api-4o5a.onrender.com', 'http://localhost:1234', 'http://myflixmoviedatabse.netlify.app/'];
 
 // Enable CORS for all routes
 // app.use(cors());
